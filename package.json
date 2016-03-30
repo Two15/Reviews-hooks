@@ -4,7 +4,8 @@
   "description": "Add dynamic mandatory reviews to your Github projects",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node index.js"
   },
   "author": "Xavier Cambar <xcambar@gmail.com>",
   "license": "MIT",
@@ -18,5 +19,8 @@
   "devDependencies": {
     "jsonfile": "^2.2.3",
     "shelljs": "^0.6.0"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }

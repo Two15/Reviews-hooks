@@ -1,0 +1,22 @@
+{
+  "name": "reviewer",
+  "version": "0.0.0",
+  "description": "Add dynamic mandatory reviews to your Github projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Xavier Cambar <xcambar@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "denodeify": "^1.2.1",
+    "github4": "^0.5.4",
+    "lodash": "^4.6.1",
+    "restify": "^4.0.4",
+    "twitter-text": "^1.13.4"
+  },
+  "devDependencies": {
+    "jsonfile": "^2.2.3",
+    "shelljs": "^0.6.0"
+  }
+}

@@ -11,7 +11,7 @@ It's a small CI tool for Github to require PR reviews.
 
 # How does it work?
 
-A quick video (of very poor quality): https://www.youtube.com/watch?v=BRQ5yTs8f5M
+Click here for a quick demo: https://www.youtube.com/watch?v=H9pR0FbKxP8
 
 ## Requiring reviews
 

@@ -1,44 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-const restify = require('restify');
-const eventFilter = require('./lib/event_filter');
-const actionFilter = require('./lib/action_filter');
+var server = require('./lib/server');
 
-function requestAction(req) {
-  return req.body.action || 'no_action'
-}
-
-function handlerPOST(req, res, next) {
-  const event = req.headers['x-github-event'];
-  eventFilter(event)
-  .then(function(eventName) {
-    return actionFilter(eventName, requestAction(req));
-  })
-  .then(function(fn) {
-    return fn(req.body);
-  })
-  .then(function() {
-    console.log('Action handled!');
-    res.send(201, 'OK');
-    next();
-  }, function(reason) {
-    console.log('Something went wrong:', reason);
-    res.send(422, reason);
-    next();
-  });
-}
-
-const server = restify.createServer();
-server.use(restify.bodyParser( { mapParams: false } ));
-
-server.post('/handler', handlerPOST);
-
-const port = process.env.PORT || 8080;
-server.listen(port, function() {
-  console.log(
-    '%s listening at %s',
-    server.name,
-    server.url
-  );
-});
+server.start(process.env.PORT);

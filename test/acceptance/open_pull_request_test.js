@@ -14,7 +14,7 @@ nock.emitter.on('no match', function(req) {
 
 describe('Creation of a pull-request', function() {
   before(function() {
-    server = server.start();
+    server = server.start(null, 'my_github_token');
   });
   after(function(done) {
     server.close(done);
@@ -24,7 +24,7 @@ describe('Creation of a pull-request', function() {
       .post(
         '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5'
       )
-      .query({"access_token": process.env.GITHUB_TOKEN})
+      .query({"access_token": 'my_github_token'})
       .reply(201, function(uri, body) {
         body = JSON.parse(body);
         assert.equal(body.state, "failure", "The CI status fails");

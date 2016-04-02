@@ -5,11 +5,15 @@ const restify = require('restify');
 const eventFilter = require('./lib/event_filter');
 const actionFilter = require('./lib/action_filter');
 
+function requestAction(req) {
+  return req.body.action || 'no_action'
+}
+
 function handlerPOST(req, res, next) {
   const event = req.headers['x-github-event'];
   eventFilter(event)
   .then(function(eventName) {
-    return actionFilter(eventName, req.body.action);
+    return actionFilter(eventName, requestAction(req));
   })
   .then(function(fn) {
     return fn(req.body);
@@ -17,10 +21,10 @@ function handlerPOST(req, res, next) {
   .then(function() {
     console.log('Action handled!');
     res.send(201, 'OK');
+    next();
   }, function(reason) {
     console.log('Something went wrong:', reason);
     res.send(422, reason);
-  }).finally(function() {
     next();
   });
 }

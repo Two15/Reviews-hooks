@@ -1,48 +1,74 @@
 'use strict';
 
 var assert = require('assert');
-var nock = require('nock');
-var fetch = require('node-fetch');
+var describeAPI = require('../helper').describe;
 
-var server = require('../../lib/server');
-
-nock.emitter.on('no match', function(req) {
-  if (req.hostname.match('github')) {
-    assert.ok(false, 'A request has not been intercepted');
-  }
-});
-
-describe('Creation of a pull-request', function() {
-  before(function() {
-    server = server.start(null, 'my_github_token');
-  });
-  after(function(done) {
-    server.close(done);
-  });
-  it('fails the pull-request if no reviewer is specified', function () {
-    var postStatusRequest = nock('https://api.github.com:443')
-      .post(
-        '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5'
-      )
-      .query({"access_token": 'my_github_token'})
-      .reply(201, function(uri, body) {
-        body = JSON.parse(body);
+describeAPI('Creation of a pull-request', function() {
+  it('adds a "failed" status if no reviewer is specified', function () {
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
         assert.equal(body.state, "failure", "The CI status fails");
-      });
+      }
+    );
 
-    const data = require('./samples/create_pull_request.json');
-    return fetch(server.url, {
-      method: 'POST',
-      headers: {
-        "x-github-event" : "pull_request",
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
+    const data = require('./samples/create_pull_request_no_review.json');
+    return this.webhook("pull_request", data)
     .then(function(res) {
       assert.equal(res.status, 201);
-      assert.ok(postStatusRequest.isDone());
+    });
+  });
+
+  it('creates one event if a reviewer is specified', function () {
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
+        assert.equal(body.state, "pending", "A review is expected");
+        assert.ok(body.context.match("@user1"), "The review is assigned to a user");
+      }
+    );
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
+        assert.equal(body.state, "success", "Reviews have been defined");
+        assert.equal(body.description, "Reviews have been required", "Success because at least one review has been assigned");
+      }
+    );
+
+    const data = require('./samples/create_pull_request_one_review.json');
+    return this.webhook("pull_request", data)
+    .then(function(res) {
+      assert.equal(res.status, 201);
+    });
+  });
+
+  it('creates one event per reviewer', function () {
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
+        assert.equal(body.state, "pending", "A review is expected");
+        assert.ok(body.context.match("@user1"), "The review is assigned to a user");
+      }
+    );
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
+        assert.equal(body.state, "pending", "A review is expected");
+        assert.ok(body.context.match("@user2"), "The review is assigned to a user");
+      }
+    );
+    this.ghMock(
+      '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
+      (uri, body)=> {
+        assert.equal(body.state, "success", "Reviews have been defined");
+        assert.equal(body.description, "Reviews have been required", "Success because at least one review has been assigned");
+      }
+    );
+
+    const data = require('./samples/create_pull_request_many_reviews.json');
+    return this.webhook("pull_request", data)
+    .then(function(res) {
+      assert.equal(res.status, 201);
     });
   });
 });
-

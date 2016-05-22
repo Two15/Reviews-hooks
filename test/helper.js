@@ -4,7 +4,7 @@ var assert = require('assert');
 var server = require('../lib/server');
 
 function noMatch(req) {
-  if (req.hostname.match('github')) {
+  if (req.hostname && req.hostname.match('github')) {
     this._unmocked = this._unmocked || req;
   }
 }
@@ -33,8 +33,24 @@ function emitWebhook(name, body) {
       'Content-Type': 'application/json'
     },
     body: body
+  }).then(res => {
+    if (res.status > 300) {
+      return res.json()
+        .then(json => {
+          console.log(json.stack);
+          assert.ok(false, `The request failed: ${json.message}`);
+        });
+    }
+    return res;
   });
 }
+
+var statuses = {
+  post: 201,
+  get: 200,
+  put: 201,
+  'delete': 204
+};
 
 module.exports = {
   describe(desc, tests) {
@@ -48,13 +64,29 @@ module.exports = {
           .then(
             assertAllMocked.bind(this),
             assertAllMocked.bind(this)
-          );
+          ).then((ret)=> {
+            this._mockAssertions.forEach(cb => cb());
+            return ret;
+          });
         };
-        this.ghMock = (path, cb)=> {
-          nock('https://api.github.com:443').post(path)
+        this.ghMock = (method, path, ret, cb)=> {
+          if (typeof ret === 'function') {
+            cb = ret;
+            ret = undefined;
+          }
+          method = method.toLowerCase();
+          var statusCode = statuses[method];
+          nock('https://api.github.com:443')
+          [method](path)
           .query({"access_token": 'my_github_token'})
-          .reply(201, function(uri, body) {
-            return cb(uri, JSON.parse(body));
+          .reply(statusCode, (uri, body)=> {
+            try {
+              body = JSON.parse(body);
+            } catch (e) {}
+            if (cb) {
+              this._mockAssertions.push(cb.bind(undefined, uri, body));
+            }
+            return ret;
           });
         };
       });
@@ -65,6 +97,7 @@ module.exports = {
 
       beforeEach(function() {
         this._unmocked = false;
+        this._mockAssertions = [];
         this.server = server.start(null, 'my_github_token');
         nock.cleanAll();
       });

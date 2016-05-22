@@ -6,6 +6,7 @@ var describeAPI = require('../helper').describe;
 describeAPI('Creation of a pull-request', function() {
   it('adds a "failed" status if no reviewer is specified', function () {
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "failure", "The CI status fails");
@@ -21,6 +22,7 @@ describeAPI('Creation of a pull-request', function() {
 
   it('creates one event if a reviewer is specified', function () {
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "pending", "A review is expected");
@@ -28,6 +30,7 @@ describeAPI('Creation of a pull-request', function() {
       }
     );
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "success", "Reviews have been defined");
@@ -44,6 +47,7 @@ describeAPI('Creation of a pull-request', function() {
 
   it('creates one event per reviewer', function () {
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "pending", "A review is expected");
@@ -51,6 +55,7 @@ describeAPI('Creation of a pull-request', function() {
       }
     );
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "pending", "A review is expected");
@@ -58,6 +63,7 @@ describeAPI('Creation of a pull-request', function() {
       }
     );
     this.ghMock(
+      'POST',
       '/repos/Two15/trashbin/statuses/90769351b748e0f5e9504afe897f95626c3a78c5',
       (uri, body)=> {
         assert.equal(body.state, "success", "Reviews have been defined");

@@ -32,7 +32,7 @@
     "url": "https://api.github.com/repos/Two15/trashbin/statuses/0cc56945448f5e38a5d4b65be5189ff54c727631",
     "id": 505642579,
     "state": "pending",
-    "description": "Waiting the review from @xcambar2",
+    "description": "Waiting the review",
     "target_url": null,
     "context": "Review my code - @xcambar2",
     "created_at": "2016-03-30T17:48:10Z",

@@ -1,7 +1,15 @@
+var get = require('object-path').get;
 var nock = require('nock');
 var fetch = require('node-fetch');
 var assert = require('assert');
+var crypto = require('crypto');
 var server = require('../lib/server');
+var repositoryUUID = require('../lib/signature_check').repositoryUUID;
+
+function sign(method, secret, body) {
+  return crypto.createHmac(method, secret)
+    .update(body).digest('hex');
+}
 
 function noMatch(req) {
   if (req.hostname && req.hostname.match('github')) {
@@ -23,25 +31,32 @@ function assertAllMocked(result) {
 }
 
 function emitWebhook(name, body) {
+  const repository = get(body, 'repository.name');
+  const owner = get(body, 'repository.owner.login');
   if (typeof body === 'object') {
     body = JSON.stringify(body);
   }
-  return this._fetch(this.server.url, {
-    method: 'POST',
-    headers: {
-      "x-github-event" : name,
-      'Content-Type': 'application/json'
-    },
-    body: body
-  }).then(res => {
-    if (res.status > 300) {
-      return res.json()
-        .then(json => {
-          console.log(json.stack);
-          assert.ok(false, `The request failed: ${json.message}`);
-        });
-    }
-    return res;
+  return repositoryUUID(owner, repository)
+  .catch(()=> "")
+  .then((uuid)=> {
+    return this._fetch(this.server.url, {
+      method: 'POST',
+      headers: {
+        "x-github-event" : name,
+        "x-hub-signature": "sha1=" + sign('sha1', uuid, body),
+        'Content-Type': 'application/json'
+      },
+      body: body
+    }).then(res => {
+      if (res.status > 300) {
+        return res.json()
+          .then(json => {
+            console.log(json.stack);
+            assert.ok(false, `The request failed: ${json.message}`);
+          });
+      }
+      return res;
+    });
   });
 }
 

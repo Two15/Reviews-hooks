@@ -17,7 +17,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       []
     );
     this.ghMock('POST',
@@ -32,7 +32,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       []);
     this.ghMock('POST',
       '/repos/Two15/trashbin/statuses/e1f846155e77fc33c36f3eef247dddc4477328f5',
@@ -52,7 +52,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       []);
     this.ghMock('POST',
       '/repos/Two15/trashbin/statuses/e1f846155e77fc33c36f3eef247dddc4477328f5',
@@ -79,7 +79,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       [{
         state: 'pending',
         context: 'Review my code - @buddy'
@@ -103,7 +103,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       [{
         state: 'pending',
         context: 'Review my code - @buddy'
@@ -127,7 +127,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       [{
         state: 'pending',
         context: 'Review my code - @buddy'
@@ -150,7 +150,7 @@ describeAPI('Adding a comment to a pull request', function() {
     this.ghMock('GET', '/repos/Two15/trashbin/pulls/33',
       require('./samples/github_api_pull_request_33.json'));
     this.ghMock('GET',
-      '/repos/Two15/trashbin/commits/e1f846155e77fc33c36f3eef247dddc4477328f5/statuses',
+      '/repos/Two15/trashbin/commits/test/statuses',
       [{
         state: 'pending',
         context: 'Review my code - @buddy'

@@ -4,12 +4,8 @@ var fetch = require('node-fetch');
 var assert = require('assert');
 var crypto = require('crypto');
 var server = require('../lib/server');
+var signMessage = require('../lib/signature');
 var repositoryUUID = require('../lib/signature_check').repositoryUUID;
-
-function sign(method, secret, body) {
-  return crypto.createHmac(method, secret)
-    .update(body).digest('hex');
-}
 
 function noMatch(req) {
   if (req.hostname && req.hostname.match('github')) {
@@ -43,7 +39,7 @@ function emitWebhook(name, body) {
       method: 'POST',
       headers: {
         "x-github-event" : name,
-        "x-hub-signature": "sha1=" + sign('sha1', uuid, body),
+        "x-hub-signature": "sha1=" + signMessage('sha1', uuid, body),
         'Content-Type': 'application/json'
       },
       body: body

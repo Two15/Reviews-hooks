@@ -68,6 +68,7 @@ module.exports = {
     return {
       headers: {},
       log: {
+        trace() {},
         debug() {},
         log() {},
         info() {},

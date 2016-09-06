@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var describeAPI = require('../helper').describe;
+var describeAPI = require('../helper').describeAcceptance;
 
 describeAPI('Rejected event', function() {
   it('is handled and dropped', function () {

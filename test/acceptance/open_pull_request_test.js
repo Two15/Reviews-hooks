@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var describeAPI = require('../helper').describe;
+var describeAPI = require('../helper').describeAcceptance;
 
 describeAPI('Creation of a pull-request', function() {
   it('adds a "failed" status if no reviewer is specified', function () {

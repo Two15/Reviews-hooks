@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var describeAPI = require('../helper').describe;
+var describeAPI = require('../helper').describeAcceptance;
 
 describeAPI('Ping', function() {
   it('responds to pings from Github', function () {

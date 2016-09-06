@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var describeAPI = require('../helper').describe;
+var describeAPI = require('../helper').describeAcceptance;
 
 // This ensure that no other request has been played
 describeAPI('Adding a comment to a pull request', function() {

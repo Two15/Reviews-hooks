@@ -64,7 +64,18 @@ var statuses = {
 };
 
 module.exports = {
-  describe(desc, tests) {
+  makeRequest() {
+    return {
+      headers: {},
+      log: {
+        debug() {},
+        log() {},
+        info() {},
+        error() {}
+      }
+    };
+  },
+  describeAcceptance(desc, tests) {
     describe(desc, function() {
 
       before(function() {
